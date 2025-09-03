@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CGPA Calculator</title>
+    <link rel="shortcut icon" href="./assets/cgpa.png" type="image/x-icon" />
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+        background: #f8f9fa;
+        color: #333;
+        display: flex;
+        justify-content: center;
+        padding: 40px 20px;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 900px;
+        background: #fff;
+        padding: 30px;
+        border-radius: 16px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+      }
+
+      h1 {
+        text-align: center;
+        margin-bottom: 25px;
+        font-size: 24px;
+        font-weight: 600;
+      }
+
+      h2 {
+        margin: 30px 0 15px;
+        font-size: 18px;
+        font-weight: 600;
+        color: #555;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+      }
+
+      th,
+      td {
+        padding: 10px 12px;
+        text-align: center;
+        border-bottom: 1px solid #e5e7eb;
+        font-size: 14px;
+      }
+
+      th {
+        background: #f1f3f5;
+        font-weight: 600;
+      }
+
+      td input[type="text"],
+      td input[type="number"],
+      td select {
+        padding: 6px 8px;
+        border-radius: 6px;
+        border: 1px solid #d1d5db;
+        width: 100%;
+        box-sizing: border-box;
+        font-size: 14px;
+        background: #fff;
+      }
+
+      td input[type="number"] {
+        max-width: 70px;
+        text-align: center;
+      }
+
+      button {
+        padding: 8px 16px;
+        border: none;
+        border-radius: 8px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background 0.2s ease;
+        margin: 5px;
+      }
+
+      .add-btn {
+        background: #2563eb;
+        color: white;
+      }
+      .add-btn:hover {
+        background: #1d4ed8;
+      }
+
+      .calculate-btn {
+        background: #16a34a;
+        color: white;
+      }
+      .calculate-btn:hover {
+        background: #15803d;
+      }
+
+      .remove-btn {
+        background: #dc2626;
+        color: white;
+      }
+      .remove-btn:hover {
+        background: #b91c1c;
+      }
+
+      #cgpaResult {
+        font-size: 20px;
+        font-weight: 600;
+        text-align: center;
+        color: #111827;
+        margin-top: 20px;
+      }
+
+      .grading-table {
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>CGPA Calculator</h1>
+
+      <table id="courseTable">
+        <thead>
+          <tr>
+            <th>Course Name</th>
+            <th>Grade</th>
+            <th>Credit</th>
+            <th>Points</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+
+      <div style="text-align: center">
+        <button class="add-btn" onclick="addCourse()">Add Course</button>
+        <button class="calculate-btn" onclick="calculateCGPA()">
+          Calculate CGPA
+        </button>
+      </div>
+
+      <p id="cgpaResult">CGPA: 0.00</p>
+
+      <h2>Grading System</h2>
+      <table class="grading-table">
+        <thead>
+          <tr>
+            <th>Marks (%)</th>
+            <th>Letter Grade</th>
+            <th>Grade Point</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>80 and above</td>
+            <td>A+</td>
+            <td>4.00</td>
+          </tr>
+          <tr>
+            <td>75 – less than 80</td>
+            <td>A</td>
+            <td>3.75</td>
+          </tr>
+          <tr>
+            <td>70 – less than 75</td>
+            <td>A-</td>
+            <td>3.50</td>
+          </tr>
+          <tr>
+            <td>65 – less than 70</td>
+            <td>B+</td>
+            <td>3.25</td>
+          </tr>
+          <tr>
+            <td>60 – less than 65</td>
+            <td>B</td>
+            <td>3.00</td>
+          </tr>
+          <tr>
+            <td>55 – less than 60</td>
+            <td>B-</td>
+            <td>2.75</td>
+          </tr>
+          <tr>
+            <td>50 – less than 55</td>
+            <td>C+</td>
+            <td>2.50</td>
+          </tr>
+          <tr>
+            <td>45 – less than 50</td>
+            <td>C</td>
+            <td>2.25</td>
+          </tr>
+          <tr>
+            <td>40 – less than 45</td>
+            <td>D</td>
+            <td>2.00</td>
+          </tr>
+          <tr>
+            <td>Below 40</td>
+            <td>F</td>
+            <td>0.00</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <script>
+      const gradePoints = {
+        "A+": 4.0,
+        A: 3.75,
+        "A-": 3.5,
+        "B+": 3.25,
+        B: 3.0,
+        "B-": 2.75,
+        "C+": 2.5,
+        C: 2.25,
+        D: 2.0,
+        F: 0.0,
+      };
+
+      function addCourse() {
+        const tableBody = document.querySelector("#courseTable tbody");
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+    <td><input type="text" placeholder="Course Name"></td>
+    <td>
+      <select onchange="updatePoints(this)">
+        ${Object.keys(gradePoints)
+          .map((g) => `<option value="${g}">${g}</option>`)
+          .join("")}
+      </select>
+    </td>
+    <td><input type="number" min="0" value="3" onchange="updatePoints(this)"></td>
+    <td class="points">0.00</td>
+    <td><button class="remove-btn" onclick="removeCourse(this)">Remove</button></td>
+  `;
+
+        tableBody.appendChild(row);
+        updatePoints(row);
+      }
+
+      function removeCourse(button) {
+        const row = button.parentElement.parentElement;
+        row.remove();
+        calculateCGPA();
+      }
+
+      function updatePoints(element) {
+        const row = element.closest("tr");
+        const grade = row.querySelector("select").value;
+        const credit =
+          parseFloat(row.querySelector("input[type='number']").value) || 0;
+        const pointsCell = row.querySelector(".points");
+        const points = (gradePoints[grade] * credit).toFixed(2);
+        pointsCell.textContent = points;
+      }
+
+      function calculateCGPA() {
+        const rows = document.querySelectorAll("#courseTable tbody tr");
+        let totalCredits = 0;
+        let totalPoints = 0;
+
+        rows.forEach((row) => {
+          const credit =
+            parseFloat(row.querySelector("input[type='number']").value) || 0;
+          const points =
+            parseFloat(row.querySelector(".points").textContent) || 0;
+          totalCredits += credit;
+          totalPoints += points;
+        });
+
+        const cgpa = totalCredits ? (totalPoints / totalCredits).toFixed(2) : 0;
+        document.getElementById("cgpaResult").textContent = `CGPA: ${cgpa}`;
+      }
+
+      for (let i = 0; i < 6; i++) {
+        addCourse();
+      }
+    </script>
+  </body>
+</html>

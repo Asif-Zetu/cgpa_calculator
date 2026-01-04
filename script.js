@@ -62,8 +62,31 @@ function calculateCGPA() {
     totalPoints += points;
   });
 
-  const cgpa = totalCredits ? (totalPoints / totalCredits).toFixed(2) : 0;
-  document.getElementById("cgpaResult").textContent = `CGPA: ${cgpa}`;
+  const rawCgpa = totalCredits ? totalPoints / totalCredits : 0;
+  const cgpa = Number(rawCgpa.toFixed(2));
+
+  const resultEl = document.getElementById("cgpaResult");
+  resultEl.textContent = `CGPA: ${cgpa.toFixed(2)}`;
+
+  resultEl.classList.remove(
+    "cgpa-excellent",
+    "cgpa-great",
+    "cgpa-good",
+    "cgpa-warning",
+    "cgpa-poor"
+  );
+
+  if (cgpa >= 3.8) {
+    resultEl.classList.add("cgpa-excellent");
+  } else if (cgpa >= 3.5) {
+    resultEl.classList.add("cgpa-great");
+  } else if (cgpa >= 3.0) {
+    resultEl.classList.add("cgpa-good");
+  } else if (cgpa >= 2.5) {
+    resultEl.classList.add("cgpa-warning");
+  } else {
+    resultEl.classList.add("cgpa-poor");
+  }
 }
 
 for (let i = 0; i < 6; i++) {
